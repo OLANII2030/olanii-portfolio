@@ -56,11 +56,11 @@ app.get('/contact', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'Public', 'index.html'));
 });
 
 app.get('/thank-you', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'thank-you.html'));
+  res.sendFile(path.join(__dirname, '..', 'Public', 'thank-you.html'));
 });
 
 // ─── Resume form submit ───────────────────────────────
