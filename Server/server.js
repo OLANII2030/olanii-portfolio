@@ -10,6 +10,7 @@ const { google } = require('googleapis');
 
 
 const app = express();
+app.set('trust proxy', 1); // add this line
 let db;
 initDB().then(database => { db = database; });
 
@@ -35,7 +36,7 @@ app.use(generalLimiter);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'Public')));
 
 // ─── Routes ───────────────────────────────────────────
 
