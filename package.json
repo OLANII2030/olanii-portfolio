@@ -4,7 +4,7 @@
     "description": "Resume download gate — collects leads and sends resume via Gmail OAuth2",
     "main": "server.js",
     "scripts": {
-        "start": "node server/server.js",
+        "start": "node Server/server.js",
         "dev": "nodemon server/server.js",
         "contact": "nodemon server/contact-server.js",
         "home-contact": "nodemon server/home-contact-server.js",
