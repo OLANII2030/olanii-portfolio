@@ -39,6 +39,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'Public')));
 
 // ─── Routes ───────────────────────────────────────────
+app.get('/home', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'Public', 'home.html'));
+});
+
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'Public', 'about.html'));
+});
+
+app.get('/projects', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'Public', 'projects.html'));
+});
+
+app.get('/contact', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'Public', 'contact.html'));
+});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
