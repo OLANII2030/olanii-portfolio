@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>On its way — Olanii Tsegaye</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:      #E0002A;
+      --red-dark: #B8001F;
+      --bg:       #0a0a0a;
+      --surface:  #141414;
+      --border:   #222;
+      --text:     #fff;
+      --muted:    #888;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 56px 40px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    /* ─── Animated checkmark ─── */
+    .check-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(224, 0, 42, 0.1);
+      border: 0.5px solid rgba(224, 0, 42, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      animation: pop 0.4s ease;
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      70%  { transform: scale(1.1); }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    .check-wrap svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--red);
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .card-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .card-sub {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: transparent;
+      border: 0.5px solid #333;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .back-btn:hover {
+      border-color: var(--red);
+      color: var(--text);
+    }
+
+    @media (max-width: 520px) {
+      .card { padding: 40px 24px; }
+      .card-title { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+
+    <div class="check-wrap">
+      <svg viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+
+    <p class="card-label">All done</p>
+    <h1 class="card-title">Resume on its way</h1>
+    <p class="card-sub">
+      Check your inbox — it should already be there.<br />
+      If you don't see it, check your spam folder.<br /><br />
+      Feel free to reply directly to that email. It comes straight to me.
+    </p>
+
+    <a href="/" class="back-btn">← Back</a>
+
+  </div>
+
+</body>
+</html>

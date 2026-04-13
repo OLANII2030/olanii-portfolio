@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact • OLANII</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="loader.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { overflow-x: clip; max-width: 100%; width: 100%; }
+    img, video, svg, canvas { max-width: 100%; height: auto; }
+
+    :root {
+      --red:      #E0002A;
+      --red-dark: #B8001F;
+      --bg:       #080808;
+      --surface:  #111;
+      --border:   #1e1e1e;
+      --text:     #fff;
+      --muted:    #777;
+      --subtle:   #333;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ─── Hero ───────────────────────────────────────── */
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      position: relative;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, #333, transparent);
+    }
+
+    .greeting-label {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 500;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .hero-title span {
+      color: var(--red);
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 17px);
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 480px;
+      margin-bottom: 48px;
+    }
+
+    .scroll-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 28px;
+      background: transparent;
+      border: 0.5px solid #2a2a2a;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .scroll-btn:hover {
+      border-color: var(--red);
+      color: var(--text);
+    }
+
+    .scroll-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      animation: bounce 1.8s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(4px); }
+    }
+
+    /* ─── Insight strip ──────────────────────────────── */
+
+    .insight {
+      border-top: 0.5px solid var(--border);
+      border-bottom: 0.5px solid var(--border);
+      margin: 48px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .insight-item {
+      background: var(--bg);
+      padding: 32px 40px;
+      text-align: center;
+    }
+
+    .insight-num {
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--red);
+      margin-bottom: 6px;
+    }
+
+    .insight-label {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ─── Form section ───────────────────────────────── */
+
+    .form-section {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .form-header {
+      margin-bottom: 48px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 12px;
+    }
+
+    .form-title {
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .form-sub {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ─── Inputs ─────────────────────────────────────── */
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: #0d0d0d;
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s ease;
+      appearance: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder { color: var(--subtle); }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--red);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    select option {
+      background: #111;
+      color: var(--text);
+    }
+
+    textarea {
+      resize: none;
+      height: 120px;
+      line-height: 1.6;
+    }
+
+    /* ─── Company field (hidden by default) ─────────── */
+
+    .company-field {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+      margin-bottom: 0;
+    }
+
+    .company-field.visible {
+      max-height: 80px;
+      opacity: 1;
+      margin-bottom: 20px;
+    }
+
+    /* ─── Submit button ──────────────────────────────── */
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      background: var(--red);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .submit-btn:hover  { background: var(--red-dark); }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { background: var(--subtle); cursor: not-allowed; }
+
+    .error-msg {
+      display: none;
+      font-size: 13px;
+      color: #ff6b6b;
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: var(--subtle);
+      text-align: center;
+      margin-top: 24px;
+      line-height: 1.6;
+    }
+
+    /* ─── Responsive ─────────────────────────────────── */
+
+    @media (max-width: 600px) {
+      .insight { grid-template-columns: 1fr; }
+      .insight-item { padding: 24px; }
+      .field-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .card { padding: 36px 24px; }
+      .card-title { font-size: 22px; }
+    }
+
+    /* --- Mobile Responsive Overrides --- */
+    .menu-toggle { display: none; }
+    .hamburger { display: none; cursor: pointer; color: white; margin-left: auto; }
+
+    @media (max-width: 768px) {
+        .hamburger { display: block; z-index: 1000; position: relative; }
+        .header { position: relative; flex-wrap: wrap; z-index: 999; }
+        .logo { position: relative; z-index: 1000; }
+        .nav {
+            display: none !important;
+            flex-direction: column !important;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            z-index: 998;
+            gap: 50px;
+        }
+        .menu-toggle:checked ~ .nav { display: flex !important; }
+        
+        .about-heading, h1 { font-size: clamp(28px, 8vw, 42px) !important; }
+        .card { padding: 20px !important; }
+    }
+
+    /* --- Tablet Responsive Overrides (1024px to 769px) --- */
+    @media (max-width: 1024px) and (min-width: 769px) {
+        .nav { gap: 15px !important; }
+        .nav a { font-size: 14px !important; }
+        .header { padding: 20px !important; }
+        .about-heading, h1 { font-size: clamp(36px, 6vw, 54px) !important; }
+        .card { padding: 30px !important; }
+    }
+
+    /* --- UNIVERSAL HEADER & NAVIGATION MATCHING ABOUT.CSS --- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 30px;
+}
+
+.header .nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.header .nav a,
+.nav a {
+    position: relative;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.nav > a:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    background-color: #e0002a;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.nav > a:not(:last-child):hover {
+    color: #ffffff;
+}
+
+.nav > a:not(:last-child):hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.header .nav .nav-button {
+    background: #e0002a;
+    color: #ffffff;
+    border: none;
+    padding: 10px 26px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    box-shadow: 0 0 0 rgba(184, 0, 31, 0);
+    transition: background 180ms ease-out, transform 180ms ease-out, box-shadow 220ms ease-out;
+}
+
+svg {
+    background-color: transparent;
+    align-items: center;
+}
+
+.header .nav .nav-button svg {
+    display: block;
+}
+
+.header .nav .nav-button:hover {
+    background: #b8001f;
+    box-shadow: 0 0 32px rgba(184, 0, 31, 0.75);
+}
+
+.header .nav .nav-button:hover svg {
+    transform: translateX(2px) scale(1.05);
+    transition: transform 0.2s ease-in-out;
+}
+/* ---------------------------------------------------- */
+
+/* ─── Footer ───────────────────────────────────────── */
+
+.footer {
+  background: #080808;
+  border-top: 0.5px solid #1e1e1e;
+  padding: 64px 40px 32px;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 60px;
+  margin-bottom: 48px;
+}
+
+.footer-logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.footer-tagline {
+  font-size: 14px;
+  color: #777777;
+  line-height: 1.7;
+  max-width: 260px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 60px;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-col-title {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.footer-col a {
+  font-size: 14px;
+  color: #777777;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-col a:hover {
+  color: #E0002A;
+}
+
+.footer-bottom {
+  border-top: 0.5px solid #1e1e1e;
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copy {
+  font-size: 13px;
+  color: #444444;
+}
+
+.footer-made {
+  font-size: 13px;
+  color: #444444;
+}
+
+@media (max-width: 768px) {
+  .footer-top {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .footer {
+    padding: 48px 24px 24px;
+  }
+}
+  </style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="loader-logo">
+    <span>O</span>
+    <span>L</span>
+    <span>A</span>
+    <span>N</span>
+    <span>I</span>
+    <span>I</span>
+    <div class="loader-dot"></div>
+  </div>
+</div>
+<div class="header">
+        <div class="logo">
+            <span style="font-family: instrument sans; font-weight: 700; font-size: 24px; color: white;">OLANII</span>
+        </div>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="hamburger">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </label>
+        <div class="nav">
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html">
+                <button class="nav-button">
+                    Contact
+                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="none" overflow="visible" aria-hidden="true" focusable="false">
+                        <path d="M 5.046 1.622 L 5.046 5.249 C 5.046 5.384 5.092 5.497 5.183 5.589 C 5.275 5.68 5.388 5.726 5.523 5.726 C 5.658 5.725 5.771 5.68 5.863 5.588 C 5.954 5.497 6 5.384 6 5.249 L 6 0.477 C 6 0.342 5.954 0.229 5.863 0.137 C 5.771 0.046 5.658 0 5.523 0 L 0.751 0 C 0.616 0 0.503 0.046 0.411 0.137 C 0.32 0.229 0.274 0.342 0.274 0.477 C 0.275 0.612 0.32 0.725 0.412 0.817 C 0.503 0.909 0.616 0.955 0.751 0.954 L 4.378 0.954 L 0.131 5.201 C 0.044 5.288 0 5.4 0 5.535 C 0 5.67 0.044 5.781 0.131 5.869 C 0.219 5.956 0.33 6 0.465 6 C 0.6 6 0.712 5.956 0.799 5.869 Z" fill="rgb(255, 255, 255)"></path>
+                    </svg>
+                </button>
+            </a>
+        </div>
+    </div>
+  <!-- ─── Hero ──────────────────────────────────────── -->
+
+  <section class="hero" id="top">
+    <p class="greeting-label">Let's connect</p>
+    <h1 class="hero-title">Hi, I'm <span>Olanii.</span><br/>Nice to meet you.</h1>
+    <p class="hero-sub">
+      Whether you have a project in mind, a role to fill, or just want
+      to start a conversation — I'm here for it. Drop me a message and
+      I'll get back to you personally.
+    </p>
+    <a href="#form" class="scroll-btn">
+      Send a message
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+    </a>
+  </section>
+
+  <!-- ─── Insight strip ─────────────────────────────── -->
+
+  <div class="insight">
+    <div class="insight-item">
+      <p class="insight-num">24h</p>
+      <p class="insight-label">Average response time</p>
+    </div>
+    <div class="insight-item">
+      <p class="insight-num">4+</p>
+      <p class="insight-label">Clients across ET & US</p>
+    </div>
+    <div class="insight-item">
+      <p class="insight-num">100%</p>
+      <p class="insight-label">Good faith, every time</p>
+    </div>
+  </div>
+
+  <!-- ─── Form ──────────────────────────────────────── -->
+
+  <section class="form-section" id="form">
+
+    <div class="form-header">
+      <p class="form-label">Get in touch</p>
+      <h2 class="form-title">What's on your mind?</h2>
+      <p class="form-sub">
+        Fill in the details below. No templates, no auto-replies —
+        you'll hear from me directly.
+      </p>
+    </div>
+
+    <form id="contactForm" action="http://localhost:3000/contact" method="POST">
+
+      <div class="field-row">
+        <div class="field">
+          <label for="full_name">Full name</label>
+          <input type="text" id="full_name" name="full_name" placeholder="Your full name" required autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@email.com" required autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="type">You are</label>
+        <select id="type" name="type" required>
+          <option value="" disabled selected>Select one</option>
+          <option value="individual">An individual</option>
+          <option value="company">A company</option>
+        </select>
+      </div>
+
+      <div class="company-field" id="companyField">
+        <label for="company">Company name</label>
+        <input type="text" id="company" name="company" placeholder="Your company name" autocomplete="organization" />
+      </div>
+
+      <div class="field">
+        <label for="message">Message <span style="color: var(--subtle); font-size: 10px; text-transform: none; letter-spacing: 0;">— optional</span></label>
+        <textarea id="message" name="message" placeholder="Tell me what you're working on, what you need, or just say hello..."></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        Send message →
+      </button>
+
+      <p class="error-msg" id="errorMsg"></p>
+
+    </form>
+
+    <p class="footer-note">
+      Replies come from Olanii directly — usually within 24 hours.
+    </p>
+
+  </section>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="footer-logo">OLANII</span>
+        <p class="footer-tagline">Full-stack web developer based in Addis.<br/>Building for founders who mean it.</p>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <p class="footer-col-title">Pages</p>
+          <a href="home.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="projects.html">Projects</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Work</p>
+          <a href="http://localhost:3000" target="_blank">Download resume</a>
+          <a href="contact.html">Hire me</a>
+          <a href="projects.html">See my work</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Socials</p>
+          <a href="https://www.linkedin.com/in/olanii-tsegaye-kemsi-034810372/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BYTBAB%2FoaQzqmEIYz5kBPdQ%3D%3D" target="_blank">LinkedIn</a>
+          <a href="#" target="_blank">GitHub</a>
+          <a href="#" target="_blank">Instagram</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Olanii Tsegaye. All rights reserved.</p>
+      <p class="footer-made">Designed & built by Olanii.</p>
+    </div>
+  </footer>
+
+  <script>
+    const typeSelect   = document.getElementById('type');
+    const companyField = document.getElementById('companyField');
+    const form         = document.getElementById('contactForm');
+    const btn          = document.getElementById('submitBtn');
+    const err          = document.getElementById('errorMsg');
+
+    typeSelect.addEventListener('change', () => {
+      if (typeSelect.value === 'company') {
+        companyField.classList.add('visible');
+        document.getElementById('company').required = true;
+      } else {
+        companyField.classList.remove('visible');
+        document.getElementById('company').required = false;
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      err.style.display = 'none';
+
+      const data = new FormData(form);
+
+      try {
+        const res = await fetch('/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(data).toString(),
+          redirect: 'follow'
+        });
+
+        if (res.redirected) {
+          window.location.href = res.url;
+        } else if (!res.ok) {
+          const json = await res.json();
+          throw new Error(json.error || 'Something went wrong.');
+        }
+      } catch (e) {
+        err.textContent = e.message;
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Send message →';
+      }
+    });
+  </script>
+<script src="loader.js"></script>
+</body>
+</html>
