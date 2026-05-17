@@ -5,10 +5,10 @@
     "main": "server.js",
     "scripts": {
         "start": "node Server/server.js",
-        "dev": "nodemon server/server.js",
-        "contact": "nodemon server/contact-server.js",
-        "home-contact": "nodemon server/home-contact-server.js",
-        "home": "nodemon server/home-server.js"
+        "dev": "nodemon Server/server.js",
+        "contact": "nodemon Server/contact-server.js",
+        "home-contact": "nodemon Server/home-contact-server.js",
+        "home": "nodemon Server/home-server.js"
     },
     "dependencies": {
         "cors": "^2.8.5",
