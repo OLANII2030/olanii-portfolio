@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,16 +8,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --red:      #E0002A;
-      --bg:       #080808;
-      --surface:  #111;
-      --border:   #1e1e1e;
-      --text:     #fff;
-      --muted:    #777;
-      --subtle:   #333;
+      --red: #E0002A;
+      --bg: #080808;
+      --surface: #111;
+      --border: #1e1e1e;
+      --text: #fff;
+      --muted: #777;
+      --subtle: #333;
     }
 
     body {
@@ -49,8 +56,15 @@
     }
 
     @keyframes pop {
-      0%   { transform: scale(0); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .icon-wrap svg {
@@ -105,27 +119,29 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="wrap">
 
     <div class="icon-wrap">
       <svg viewBox="0 0 24 24">
-        <polyline points="20 6 9 17 4 12"/>
+        <polyline points="20 6 9 17 4 12" />
       </svg>
     </div>
 
     <p class="label">Message received</p>
-    <h1 class="title">I'll get back to you<br/>as soon as possible.</h1>
+    <h1 class="title">I'll get back to you<br />as soon as possible.</h1>
     <p class="sub">
-      Your message went straight to my inbox.<br/>
+      Your message went straight to my inbox.<br />
       I read every one personally and reply within 24 hours —
       usually much sooner.
     </p>
 
-    <a href="http://localhost:3001" class="back-btn">← Back to contact</a>
+    <a href="http://localhost:3000/contact" class="back-btn">← Back to contact</a>
 
   </div>
 
 </body>
+
 </html>

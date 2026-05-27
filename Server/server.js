@@ -1,157 +1,210 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
-const rateLimit = require('express-rate-limit');
-const { initDB, saveDB, getDB } = require('./db');
-const { sendResume, createTransporter } = require('./mailer');
-const { google } = require('googleapis');
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 
+const express = require('express');
+const path = require('path');
+const nodemailer = require('nodemailer');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
-app.set('trust proxy', 1); // add this line
-let db;
-initDB().then(database => { db = database; });
+const PORT = process.env.PORT || 3000;
 
-// ─── Ensure data folder exists ────────────────────────
-const dataDir = path.join(__dirname, 'data');
-if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
+// ─── Trust Proxy ──────────────────────────────────────────────
+// Required for rate limiting to work correctly on Railway
+// Without this, every request looks like it comes from the same IP
+app.set('trust proxy', 1);
 
-// ─── Rate Limiters ───────────────────────────────────
+// ─── Rate Limiters ────────────────────────────────────────────
 const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  message: { error: 'Too many requests. Please try again later.' }
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,                  // 100 requests per window
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests. Please try again later.' }
 });
 
-const submitLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: { error: 'Too many submissions. Please wait before trying again.' }
+const formLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5,                    // 5 form submissions per window
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many submissions. Please wait before trying again.' }
 });
 
-// ─── Middleware ───────────────────────────────────────
+// Apply general limiter to all routes
 app.use(generalLimiter);
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '..', 'Public')));
 
-// ─── Routes ───────────────────────────────────────────
+// ─── Middleware ───────────────────────────────────────────────
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '..', 'Public'), { index: false }));
+
+// ─── Input Sanitizer ─────────────────────────────────────────
+// Escapes HTML characters so nothing malicious can be injected
+// into your email templates
+function sanitize(str) {
+    if (typeof str !== 'string') return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .trim();
+}
+
+// ─── Email Transporter ────────────────────────────────────────
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD
+    }
+});
+
+// ─── Page Routes ─────────────────────────────────────────────
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'Public', 'index.html'));
+});
+
 app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'Public', 'home.html'));
+    res.sendFile(path.join(__dirname, '..', 'Public', 'home.html'));
 });
 
 app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'Public', 'about.html'));
+    res.sendFile(path.join(__dirname, '..', 'Public', 'about.html'));
 });
 
 app.get('/projects', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'Public', 'projects.html'));
+    res.sendFile(path.join(__dirname, '..', 'Public', 'projects.html'));
 });
 
 app.get('/contact', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'Public', 'contact.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'Public', 'index.html'));
+    res.sendFile(path.join(__dirname, '..', 'Public', 'contact.html'));
 });
 
 app.get('/thank-you', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'Public', 'thank-you.html'));
+    res.sendFile(path.join(__dirname, '..', 'Public', 'thank-you.html'));
 });
 
-// ─── Resume form submit ───────────────────────────────
-app.post('/submit', submitLimiter, async (req, res) => {
-  const { full_name, company, email } = req.body;
-
-  if (!full_name || !email || typeof full_name !== 'string' || typeof email !== 'string') {
-    return res.status(400).json({ error: 'Full name and email are required text fields.' });
-  }
-
-  if (full_name.length > 100 || email.length > 100 || (company && (typeof company !== 'string' || company.length > 100))) {
-    return res.status(400).json({ error: 'Input is too long. Maximum 100 characters allowed.' });
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ error: 'Please enter a valid email address.' });
-  }
-
-  try {
-    // ─── Save to database ────────────────────────────
-    db.run(
-      `INSERT INTO leads (full_name, company, email, ip_address) VALUES (?, ?, ?, ?)`,
-      [
-        full_name.trim(),
-        company ? company.trim() : null,
-        email.trim().toLowerCase(),
-        req.ip
-      ]
-    );
-    saveDB();
-
-    // ─── Send resume via Gmail ───────────────────────
-    await sendResume({
-      fullName: full_name.trim(),
-      company: company ? company.trim() : null,
-      email: email.trim().toLowerCase()
-    });
-
-    // ─── Append to Google Sheet ──────────────────────
-    await appendToSheet({
-      fullName: full_name.trim(),
-      company: company ? company.trim() : null,
-      email: email.trim().toLowerCase()
-    });
-
-    res.redirect('/thank-you');
-
-  } catch (err) {
-    console.error('Error processing submission:', err);
-    res.status(500).json({ error: 'Something went wrong. Please try again.' });
-  }
+app.get('/contact-sent', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'Public', 'contact-sent.html'));
 });
 
-// ─── Google Sheets ────────────────────────────────────
-async function appendToSheet({ fullName, company, email }) {
-  const auth = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_REDIRECT_URI
-  );
-
-  auth.setCredentials({
-    refresh_token: process.env.GOOGLE_REFRESH_TOKEN
-  });
-
-  const sheets = google.sheets({ version: 'v4', auth });
-
-  await sheets.spreadsheets.values.append({
-    spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    range: 'Sheet1!A:D',
-    valueInputOption: 'RAW',
-    resource: {
-      values: [[
-        fullName,
-        company || '',
-        email,
-        new Date().toLocaleString()
-      ]]
+// ─── Resume Gate ──────────────────────────────────────────────
+app.post('/submit', formLimiter, async (req, res) => {
+    // Honeypot check — bots fill everything, humans leave this blank
+    if (req.body.website) {
+        return res.redirect('/thank-you'); // fake success, send nothing
     }
-  });
-}
 
-// ─── Admin: view all leads ────────────────────────────
-app.get('/admin/leads', submitLimiter, (req, res) => {
-  const leads = db.exec('SELECT * FROM leads ORDER BY sent_at DESC')[0]?.values || [];
-  res.json({ count: leads.length, leads });
+    const full_name = sanitize(req.body.full_name);
+    const email = sanitize(req.body.email);
+    const company = sanitize(req.body.company || '');
+
+    if (!full_name || !email) {
+        return res.status(400).json({ error: 'Name and email are required.' });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: 'Please enter a valid email address.' });
+    }
+
+    if (full_name.length > 100 || email.length > 100 || company.length > 100) {
+        return res.status(400).json({ error: 'Input too long.' });
+    }
+
+    try {
+        await transporter.sendMail({
+            from: `Olanii Tsegaye <${process.env.GMAIL_USER}>`,
+            to: email,
+            subject: `Here's my resume, ${full_name.split(' ')[0]}`,
+            html: `
+        <div style="font-family: Inter, sans-serif; max-width: 560px; color: #1a1a1a;">
+          <p>Hi ${full_name.split(' ')[0]},</p>
+          <p>Thanks for your interest — my resume is attached to this email.</p>
+          ${company ? `<p>I noticed you're with <strong>${company}</strong> — looking forward to any potential conversations.</p>` : ''}
+          <p>Feel free to reply directly to this email if you'd like to connect.</p>
+          <p>— Olanii</p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+          <p style="font-size: 12px; color: #999;">Olanii Tsegaye · Full-Stack Developer · Addis Ababa, Ethiopia</p>
+        </div>
+      `,
+            attachments: [
+                {
+                    filename: 'Olanii-Tsegaye-Resume.pdf',
+                    path: path.resolve(process.env.RESUME_PATH)
+                }
+            ]
+        });
+
+        res.redirect('/thank-you');
+
+    } catch (err) {
+        console.error('Resume email error:', err);
+        res.status(500).json({ error: 'Something went wrong. Please try again.' });
+    }
 });
 
-// ─── Start server ─────────────────────────────────────
-const PORT = process.env.PORT || 3000;
+// ─── Contact Form ─────────────────────────────────────────────
+app.post('/contact', formLimiter, async (req, res) => {
+    // Honeypot check
+    if (req.body.website) {
+        return res.redirect('/contact-sent'); // fake success, send nothing
+    }
+
+    const full_name = sanitize(req.body.full_name);
+    const email = sanitize(req.body.email);
+    const type = sanitize(req.body.type || '');
+    const company = sanitize(req.body.company || '');
+    const message = sanitize(req.body.message || '');
+
+    if (!full_name || !email) {
+        return res.status(400).json({ error: 'Name and email are required.' });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: 'Please enter a valid email address.' });
+    }
+
+    if (full_name.length > 100 || email.length > 100 ||
+        company.length > 100 || message.length > 2000) {
+        return res.status(400).json({ error: 'Input too long.' });
+    }
+
+    try {
+        await transporter.sendMail({
+            from: `Portfolio Contact <${process.env.GMAIL_USER}>`,
+            to: process.env.GMAIL_USER,
+            replyTo: email,
+            subject: `New message from ${full_name}${company ? ` — ${company}` : ''}`,
+            html: `
+        <div style="font-family: Inter, sans-serif; max-width: 560px; color: #1a1a1a;">
+          <p style="font-size: 13px; color: #999;">New contact form submission</p>
+          <p><strong>Name:</strong> ${full_name}</p>
+          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+          <p><strong>Type:</strong> ${type === 'company' ? 'Company' : 'Individual'}</p>
+          ${company ? `<p><strong>Company:</strong> ${company}</p>` : ''}
+          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+          ${message
+                    ? `<p><strong>Message:</strong><br/>${message}</p>`
+                    : '<p style="color: #999;"><em>No message provided.</em></p>'
+                }
+          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+          <p style="font-size: 12px; color: #999;">Reply directly to this email to respond to ${full_name}.</p>
+        </div>
+      `
+        });
+
+        res.redirect('/contact-sent');
+
+    } catch (err) {
+        console.error('Contact email error:', err);
+        res.status(500).json({ error: 'Something went wrong. Please try again.' });
+    }
+});
+
+// ─── Start Server ─────────────────────────────────────────────
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n  Resume gate running at http://localhost:${PORT}\n`);
+    console.log(`\n  Server running at http://localhost:${PORT}\n`);
 });

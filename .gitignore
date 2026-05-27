@@ -12,3 +12,5 @@ server/data/*.db
 
 # Logs
 npm-debug.log*
+
+Server/assets/
