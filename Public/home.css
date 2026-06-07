@@ -786,6 +786,7 @@ body {
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
