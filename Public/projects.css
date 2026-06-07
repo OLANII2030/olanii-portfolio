@@ -429,6 +429,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             transition: background 0.2s ease, transform 0.2s ease;
         }
@@ -763,3 +764,4 @@
         .cell:nth-child(8) { animation-delay: 0.4s; }
         .cell:nth-child(9) { animation-delay: 0.45s; }
         .cell:nth-child(10) { animation-delay: 0.5s; }
+        
